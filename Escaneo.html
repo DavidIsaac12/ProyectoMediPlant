@@ -91,8 +91,6 @@
             max-width: 100%;
             opacity: 0;
             transition: opacity 0.5s, transform 0.5s;
-            /* Opcional: Si quieres un fondo visible detrás del texto */
-            /* background-color: rgba(255, 255, 255, 0.7); */ 
         }
 
         #label-container.active {
@@ -165,7 +163,7 @@
 <body>
 
     <div class="left-panel">
-        <h5>Empieza a escanear plantas para obtener la infomacion benefica que ésta ¡tiene para ti!</h5>
+        <h5>Empieza a escanear plantas para obtener la información benéfica que ésta ¡tiene para ti!</h5>
     </div>
 
     <div class="right-panel">
@@ -180,20 +178,20 @@
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
         const URL = "https://teachablemachine.withgoogle.com/models/kFord15zm/";
-    
+
         let model, maxPredictions;
         const videoElement = document.getElementById("video");
 
         async function init() {
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
-    
+
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
-    
+
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             const facingMode = isMobile ? { exact: "environment" } : "user";
-    
+
             const constraints = {
                 video: {
                     facingMode: facingMode,
@@ -201,7 +199,7 @@
                     height: { ideal: 720 }
                 }
             };
-    
+
             try {
                 const stream = await navigator.mediaDevices.getUserMedia(constraints);
                 videoElement.srcObject = stream;
@@ -231,7 +229,7 @@
                 const probability = prediction[i].probability.toFixed(2) * 100;
                 if (probability >= 70) {
                     const classPrediction =
-                        prediction[i].className + ": " + probability.toFixed(2) + "%";
+                        prediction[i].className.toLowerCase() + ": " + probability.toFixed(2) + "%"; // Convertir a minúsculas
                     const predictionElement = document.createElement("div");
                     predictionElement.innerText = classPrediction;
                     labelContainer.appendChild(predictionElement);
@@ -239,7 +237,7 @@
 
                 // Si la probabilidad es mayor o igual a 90%, guardamos el nombre de la clase
                 if (probability >= 90) {
-                    highPrediction = prediction[i].className;
+                    highPrediction = prediction[i].className.toLowerCase(); // También convertir aquí a minúsculas
                 }
             }
 
@@ -247,7 +245,7 @@
 
             // Si tenemos una predicción alta, redirigimos a la página correspondiente
             if (highPrediction) {
-                const url = highPrediction.toLowerCase() + ".html"; // Convertimos el nombre a minúsculas y agregamos .html
+                const url = highPrediction + ".html"; // Aquí ya debería estar en minúsculas
                 setTimeout(() => {
                     window.location.href = url; // Redirigimos a la página después de 5 segundos
                 }, 5000); // 5000 milisegundos = 5 segundos
@@ -257,3 +255,4 @@
 
 </body>
 </html>
+
